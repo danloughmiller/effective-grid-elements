@@ -1,0 +1,30 @@
+{
+    "repositories": [
+      {
+        "name": "Effective Theme Elements",
+        "type": "vcs",
+        "url": "https://github.com/danloughmiller/effective-theme-elements"
+      },
+      {
+        "name": "Effective HTML Elements",
+        "type": "vcs",
+        "url": "https://github.com/danloughmiller/effective-html-elements"
+      }
+    ],
+    "require": {
+      "php": "^7.3 || ^8.0",
+      "ext-curl": "*",
+      "ext-intl": "*",
+      "ext-json": "*",
+      "ext-mbstring": "*",
+      "danloughmiller/effective-html-elements": "dev-main",
+      "danloughmiller/effective-theme-elements": "dev-main"
+    },
+    "autoload": {
+      "psr-4": {
+        "EffectiveGrid\\": [
+          "src"
+        ]
+      }
+    }
+  }
