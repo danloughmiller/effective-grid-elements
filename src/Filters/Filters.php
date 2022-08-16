@@ -5,8 +5,9 @@ use EffectiveHtmlElements\HTMLElement;
 
 class Filters extends HTMLElement
 {
-	
+	/** @var Filter[] $filters */
     public $filters = array();
+
     public $labels = array(
         'reset_filters' => 'Reset Filters',
         'update_filters' => 'Update Filters',

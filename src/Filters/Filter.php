@@ -1,58 +1,30 @@
 <?php
 namespace EffectiveGrid\Filters;
 
+use EffectiveHtmlElements\Html\Label;
 use EffectiveHtmlElements\HTMLElement;
 
 abstract class Filter extends HTMLElement
 {
-	public $id = '';
-	public $title = "";
-	public $placeholder = "";
-	
-	public $_renderTitle = true;
-	public $_renderEmptyTitle = false;
-	
-	public function __construct($id, $title, $placeholder='')
+	public Label $label;
+		
+	public function __construct(string $label, $classes=array(), $id='')
 	{
-		$this->id = $id;
-		$this->title = $title;
-		$this->placeholder = $placeholder;
-	}
-		
-	function render($index=false)
-	{
-		
-		$classes = $this->getClasses(!empty($index)?'effective-grid-filter-index-'.$index:false);
-		$ret = '<div id="effective-grid-filter-' . $this->id . '" class="' . implode(" ", $classes) . '">';
-		if ($this->_renderTitle && ($this->_renderEmptyTitle || !empty($this->title)))
-			$ret .= '<span class="effective-grid-title">' . $this->title .'</span>';
-		
-		$ret .= $this->renderElement();
-		
-		$ret .= '</div>';
-		
-		return $ret;
-	}
-	
-	protected function renderElement()
-	{
-		
-	}
-	
-	protected function getClasses($additional = array())
-	{
-		if (empty($additional)) 
-			$additional = array();
-		
-		if (is_string($additional))
-			$additional = array($additional);
-		
-		return array_merge(array('effective-grid-filter'), $additional);
-	}
-	
-	public function constructQuery(&$args, &$tax_query)
-	{
+		$classes[] = 'effective-grid-filter';
+		parent::__construct(false, $classes, $id);
 
+		$this->addChild($this->label = new Label($label));
+	}
+	
+	/**
+	 * Applies this filter to the query
+	 *
+	 * @param array $args
+	 * @return array
+	 */
+	public function applyFilter(array $args)
+	{
+		return $args;
 	}
 	
 }

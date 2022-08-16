@@ -1,27 +1,49 @@
 <?php
 namespace EffectiveGrid\Grids;
 
+use EffectiveHtmlElements\Element;
+use EffectiveHtmlElements\HTMLElement;
+use EffectiveHtmlElements\Theme\Elements\PostCards\WPPostCard;
+
 class PostGrid extends Grid
 {
-	public $post_type = false;
-    public $taxonomies = array();
-    public $additional_query_args = array();
-    public $createElementCallback = false;
+	public string $post_type = 'post';
 		
-	public function __construct($grid_id, $post_type='post', $taxonomies = array(), $additional_query_args=array(), $createElementCallback = false)
+	public function __construct(string $grid_id, string $post_type='post', $classes=array(), string $id='')
 	{
-		parent::__construct($grid_id, false);
+		$classes[] = 'effective-grid-post-grid';
+		parent::__construct($grid_id, $classes, $id);
 		
 		$this->post_type = $post_type;
-        $this->taxonomies = $taxonomies;
-        $this->additional_query_args = $additional_query_args;
-        $this->createElementCallback = $createElementCallback;
 	}
-	
-	protected function constructQuery()
+
+	function createElement($data) : WPPostCard
 	{
-		global $wpdb;
-		
+		return new WPPostCard($data);
+	}
+
+	function getCurrentElements(): array
+	{
+		$posts = get_posts($this->applyFilters($this->constructQuery()));
+					
+		$elements = array();
+		foreach ($posts as $r) {
+			$elements[] = $this->createElement($r);
+		}
+
+		return $elements;
+	}
+
+	function getTotalElementCount() : int {
+        $query = $this->constructQuery();
+        $query['posts_per_page']=-1;
+        $q = get_posts($query);
+		return count($q);
+	}
+
+	
+	protected function constructQuery() : array
+	{		
 		$args = array(
 			'post_type'=>$this->post_type,
 			'posts_per_page'=>$this->itemsPerPage,
@@ -32,43 +54,10 @@ class PostGrid extends Grid
         
         if (is_array($this->additional_query_args))
             $args = array_merge($args, $this->additional_query_args);
-		
-		//If this has filters we'll apply those now
-		if (!empty($this->filters->filters) && count($this->filters->filters)>0) {
-			$tax_query = array();
-			
-			foreach ($this->filters->filters as $filter) {
-				$filter->constructQuery($args, $tax_query);
-			}
-			
-			$args['tax_query'] = $tax_query;
-			
-        }
         
 		return $args;
 	}
 	
-	function getElements()
-	{
-        $posts = get_posts($this->constructQuery());
-					
-		$elements = array();
-		foreach ($posts as $r) {
-            if (!empty($this->createElementCallback)) {
-                $elements[] = call_user_func($this->createElementCallback, $r);
-            } else {
-                $elements[] = new EffectiveGrid_PostElement($r);
-            }
-		}
-		return $elements;
-	}
-	
-	function getElementCount() {
-        $query = $this->constructQuery();
-        $query['posts_per_page']=-1;
-        $q = get_posts($query);
-		return count($q);
-	}
 	
 	function getPaginationLink($pindex) { 
 		$link = '?egrid_page='.$pindex;
@@ -84,11 +73,6 @@ class PostGrid extends Grid
 		return $link;
 	}
 	
-	function getClasses($additional=array())
-	{
-		return parent::getClasses(array('effective-grid-postgrid'));
-	}
-
 }
 
 
