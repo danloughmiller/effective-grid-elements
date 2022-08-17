@@ -17,7 +17,7 @@ class PostGrid extends Grid
 		$this->post_type = $post_type;
 	}
 
-	function createElement($data) : WPPostCard
+	function createElement($data) : HTMLElement
 	{
 		return new WPPostCard($data);
 	}

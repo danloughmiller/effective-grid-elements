@@ -1,65 +1,35 @@
 <?php
 namespace EffectiveGrid\Filters;
 
+use EffectiveHtmlElements\Html\Forms\Select;
+
 abstract class DropdownFilter extends Filter
 {
-	public $options = array();
-	public $selected = '';
+	public array $options = array();
+
+	public bool $_renderSelect2 = true;
+
+	public Select $select;
 	
-	public $_renderSelect2 = true;
-	
-	public function __construct($id, $title, $placeholder='', $options=array(), $selected='')
+	public function __construct(string $field_name, string $label, string $placeholder='', $options=array(), string|array $current_value='', $classes=array())
 	{
-		parent::__construct($id, $title, $placeholder);
+		parent::__construct($field_name, $label, $current_value, $classes);
+
 		$this->options = $options;
-		$this->selected = $selected;
-	}
-	
-	protected function getSelectName() { }
-	protected function renderElement()
-	{
-		
-		$ret .= '<select class="' . ($this->_renderSelect2?'egrid-select2':'') . '" data-minimum-results-for-search="Infinity" name="' . $this->getSelectName() . '">';
-		
-		if (!empty($this->placeholder))
-			$ret .= $this->renderOption("", $this->placeholder);
-		
-		
-		if (is_array($this->options)) {
-			foreach ($this->options as $key=>$value) {
-                $data = @$value['data'];
-                $label = $value['label'];
 
-				$ret .= $this->renderOption($key, $label, $data);
-			}
+		$this->addChild($this->select = new Select($this->field_name, $this->options, $current_value));
+
+		if ($this->_renderSelect2)
+		{
+			$this->select->addClass('egrid-select2');
+			$this->select->setDataAttr('minimum-results-for-search', 'Infinity');
 		}
-		
-		$ret .= '</select>';
-		
-		return $ret;
 	}
-	
-	protected function renderOption($key, $label, $data=false)
-	{
-		return '<option ' . ($this->selected===true||$this->selected==$key?'SELECTED':'') . ' value="'.$key.'">' . $label . '</option>';
-	}
-	
-	protected function getClasses($additional = array())
-	{
-		return array_merge(
-			parent::getClasses($additional), 
-			array('effective-grid-dropdown-filter')
-		);
-	}
-	
-	public function addOption($key, $value, $data=false)
-	{
-        $this->options[$key] = array('label'=>$value, 'data'=>$data);
-        $this->addChildren($key, $value, $data);
-    }
-    
-    public function addChildren($key, $value, $data=false)
-    {
 
-    }
+	function setCurrentValue(string|array $current_value): void
+	{
+		parent::setCurrentValue($current_value);
+		$this->select->setSelected($current_value);
+	}
+
 }

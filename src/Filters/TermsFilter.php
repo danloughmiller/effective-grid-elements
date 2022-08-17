@@ -3,57 +3,61 @@ namespace EffectiveGrid\Filters;
 
 class TermsFilter extends DropdownFilter
 {
-	public $taxonomy = '';
+	public string $taxonomy = '';
 	
-	public function __construct($id, $title, $placeholder='', $taxonomy=false, $selected='')
+	public function __construct(string $taxonomy, string $label, $placeholder='', $current_value='', $classes=array())
 	{
-		parent::__construct($id, $title, $placeholder, array(), $selected);
+		parent::__construct($taxonomy, $label, $placeholder, array(), $current_value, $classes);
 		
 		if ($taxonomy) {
 			$this->taxonomy = $taxonomy;
-            $terms = get_terms(array('taxonomy'=>$taxonomy, 'parent'=>0));	
+
+            $terms = $this->getTerms();
 		
 			if ($terms) {
 				foreach ($terms as $t) {
-					$this->addOption($t->slug, $t->name, $t);
+					$this->select->addOption($t->name, $t->slug);
 				}
 			}
 		}
     }
-    
-    public function addChildren($key, $value, $data=false)
-    {
-        if (is_a($data, 'WP_Term')) {
-            $terms = get_terms(array('taxonomy'=>$this->taxonomy, 'parent'=>$data->term_id));
-            if ($terms) {
-				foreach ($terms as $t) {
-					$this->addOption($t->slug, $t->parent==0?$t->name:'&nbsp;&nbsp;&nbsp;'.$t->name, $t);
-				}
-			}
-        }
-    }
-	
-	function getSelectName()
+
+	/**
+	 * Retrieves the terms to be used by this filter
+	 *
+	 * @return WP_Term[]
+	 */
+	function getTerms() : array
 	{
-		return 'egrid_filter[' . $this->taxonomy . ']';
+		$res = get_terms(array('taxonomy'=>$this->taxonomy, 'parent'=>0));	
+		
+		if (!is_array($res))
+			$res = array();
+
+		return $res;
 	}
-	
-	protected function get_classes($additional=array())
+
+	function applyFilter(array $args): array
 	{
-		return array_merge(
-			parent::get_classes($additional), 
-			array('effective-grid-terms-filter', 'effective-grid-terms-filter-'.$this->taxonomy)
+		if (empty($this->current_value))
+			return $args;
+
+		if (!empty($args['tax_query'])) {
+			$tax_query = $args['tax_query'];
+		} else {
+			$tax_query = array();
+		}
+
+		$tax_query[] = array(
+			'taxonomy' => $this->taxonomy,
+			'field' => 'slug',
+			'terms' => $this->current_value,
+			'operator' => 'IN'
 		);
+
+		$args['tax_query'] = $tax_query;
+
+		return $args;
 	}
-	
-	function constructQuery(&$args, &$tax_query)
-	{
-		if (!empty($this->selected)) {
-			$tax_query[] = array(
-				'taxonomy'=>$this->taxonomy,
-				'field'=>'slug',
-				'terms'=>$this->selected
-			);
-		}
-	}
+
 }
