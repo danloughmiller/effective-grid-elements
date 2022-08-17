@@ -1,0 +1,11 @@
+.effective-grid-filter-container {
+  margin: 1em 0;
+  display: flex;
+  gap: 1em;
+  align-items: flex-end;
+}
+.effective-grid-filter {
+  display: flex;
+  flex-direction: column;
+  justify-items: flex-end;
+}
