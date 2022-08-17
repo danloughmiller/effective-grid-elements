@@ -26,10 +26,4 @@ abstract class DropdownFilter extends Filter
 		}
 	}
 
-	function setCurrentValue(string|array $current_value): void
-	{
-		parent::setCurrentValue($current_value);
-		$this->select->setSelected($current_value);
-	}
-
 }
