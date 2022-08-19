@@ -19,6 +19,9 @@ abstract class DropdownFilter extends Filter
 
 		$this->addChild($this->select = new Select($this->field_name, $this->options, $current_value));
 
+		if (!empty($placeholder))
+			$this->select->addOption($placeholder, '');
+
 		if ($this->_renderSelect2)
 		{
 			$this->select->addClass('egrid-select2');

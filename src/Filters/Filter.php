@@ -12,8 +12,11 @@ abstract class Filter extends HTMLElement
 		
 	public function __construct(string $field_name='', string $label='', string|array $current_value,  $classes=array(), $id='')
 	{
+		$class_name = $path = explode('\\', get_class($this));
+		$class_name = array_pop($path);
+
 		$classes[] = 'effective-grid-filter';
-		$classes[] = 'effective-grid-filter-' . strtolower(self::class);
+		$classes[] = 'effective-grid-filter-' . strtolower($class_name);
 
 		if (!empty($field_name))
 			$classes[] = 'effective-grid-filter-' . $field_name;
