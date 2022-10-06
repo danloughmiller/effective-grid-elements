@@ -41,7 +41,7 @@ class FilterContainer extends HTMLElement
 		$this->filters[] = $filter;
 	}
 
-	function getRenderableChildren()
+	function getRenderableChildren() : array
 	{
 		$children = parent::getRenderableChildren();
 		
