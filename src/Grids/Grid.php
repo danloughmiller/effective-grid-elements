@@ -35,7 +35,7 @@ abstract class Grid extends HTMLElement
 		return parent::render();
 	}
 
-	function getRenderableChildren()
+	function getRenderableChildren() : array
 	{
 		$children = parent::getRenderableChildren();
 
