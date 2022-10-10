@@ -4,13 +4,13 @@ namespace EffectiveGrid\Grids;
 use EffectiveGrid\Elements\Element;
 use EffectiveGrid\Filters\FilterContainer;
 use EffectiveHtmlElements\HTMLElement;
-use EffectiveHtmlElements\Theme\Layout\GridElement;
+use EffectiveThemeElements\Layout\GridContainer;
 
 abstract class Grid extends HTMLElement
 {
 	public string $grid_id = '';
 	public ?FilterContainer $filter_container = null;
-	public ?GridElement $elements = null;
+	public ?GridContainer $elements = null;
 	
 	/** @var int $itemsPerPage The number of items to show per page, or -1 for no paging */
 	public int $itemsPerPage = -1;
@@ -23,7 +23,7 @@ abstract class Grid extends HTMLElement
 		parent::__construct('div', $classes, $id??'effective-grid-'.$grid_id);
 
 		$this->filter_container = new FilterContainer();
-		$this->addChild($this->elements = new GridElement());
+		$this->addChild($this->elements = new GridContainer());
 	}
 
 	function render() : string

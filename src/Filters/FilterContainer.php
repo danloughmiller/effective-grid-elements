@@ -2,8 +2,8 @@
 namespace EffectiveGrid\Filters;
 
 use EffectiveHtmlElements\HTMLElement;
-use EffectiveHtmlElements\Theme\Elements\AnchorButton;
-use EffectiveHtmlElements\Theme\Elements\SubmitButton;
+use EffectiveThemeElements\Elements\AnchorButton;
+use EffectiveThemeElements\Elements\Button;
 
 class FilterContainer extends HTMLElement
 {
@@ -13,7 +13,7 @@ class FilterContainer extends HTMLElement
 	public FilterActions $actions;
 
 	public AnchorButton $reset_button;
-	public SubmitButton $update_button;
+	public Button $update_button;
 
     public $labels = array(
         'reset_filters' => 'Reset Filters',
@@ -27,7 +27,7 @@ class FilterContainer extends HTMLElement
 		
 		$this->addChild($this->actions = new FilterActions());
 
-		$this->actions->addChild($this->update_button = new SubmitButton($this->labels['update_filters']));
+		$this->actions->addChild($this->update_button = new Button($this->labels['update_filters']));
 		$this->actions->addChild($this->reset_button = new AnchorButton($this->labels['reset_filters'], parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH)));
 	}
 	

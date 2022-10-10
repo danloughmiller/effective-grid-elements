@@ -1,9 +1,8 @@
 <?php
 namespace EffectiveGrid\Grids;
 
-use EffectiveHtmlElements\Element;
 use EffectiveHtmlElements\HTMLElement;
-use EffectiveHtmlElements\Theme\Elements\PostCards\WPPostCard;
+use EffectiveThemeElements\Components\Cards\WPPostCard;
 
 class PostGrid extends Grid
 {
